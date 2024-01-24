@@ -29,12 +29,12 @@ L = 100
 fundamental_value = 100
 initial_price = 100
 time = 100
-constant = 0.05
+constant = 1.5
 trader_grid = Functions.grid_stock_market(L, 0.3)
 constant_trading = 20
 news_relevance = [0.2, 0.7]
 stock = 0.01
-period = 400
+period = 10
 
 
 resultS = Level_3_simulation(trader_grid, initial_price, fundamental_value, time, L, constant, constant_trading, news_relevance, stock, period)
