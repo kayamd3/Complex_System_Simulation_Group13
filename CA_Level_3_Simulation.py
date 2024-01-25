@@ -28,8 +28,8 @@ def Level_3_simulation(trader_grid, initial_price, fundamental_value, time, L, s
 L = 100
 fundamental_value = 100
 initial_price = 100
-time = 100
-constant = 1.5
+time = 1000
+constant = 0.7
 trader_grid = Functions.grid_stock_market(L, 0.3)
 constant_trading = 20
 news_relevance = [0.2, 0.7]
@@ -47,3 +47,12 @@ plt.figure(2)
 plt.plot(np.arange(time+1), resultS[3])
 plt.show()
 plt.close()
+
+## NOTES: 
+    # Maybe vary connection probability in random graph to observe how that would affect the trading behaviour 
+    # and price fluctuation --> see if you can also observe a change in pricing/trading behaviour
+    # Algorithmic complexity in order to quantify the complexity observed?
+    # Look into early warning signs of phase transitions --> paper on critical points
+    # Coul you make a bifurcation diagram for this transition?
+    # Control parameter vs order parameter plot ?
+    # Potential expansion of model could be to implement the spread of rumors in the model --> how does this affect simulation

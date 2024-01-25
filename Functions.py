@@ -79,11 +79,6 @@ def price_fluctuations(k, prices):
     Lt = sum(abs(P_i - P_bar) for P_i in prices[-k:]) / (k*P_bar)
     return Lt
 
-def price_fluctuation_alterive(period_k, prices):
-    period_k = 1
-    W = np.random.rand()  # Wiener process
-    cumulative_W = W
-    return cumulative_W
 #    prices_considered = []
 #    if len(price_list) >= period_length:
  #       for idx in range(len(price_list) - (period_length), len(price_list)):
