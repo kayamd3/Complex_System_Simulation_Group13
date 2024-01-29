@@ -164,10 +164,8 @@ plt.close()
 ## MAP OF DIFFERENT REGIMES
 # Regimes are minimal trading activity and increased trading activity
 # initialize storage for parameters, mean prices, and trading activity
-Fundamentalists = []
-Sensitivity = []
-Prices = []
-Trading = []
+Prices_matrix = []
+Trading_activity_matrix = []
 
 # initialize fundamentalist probability variations & iterate through different probabilities
 variations_fundamentalists = np.arange(0.1, 1.1, 0.1)
@@ -175,6 +173,8 @@ for fundamentalist_probability in variations_fundamentalists:
     # initialize trader grid (note: L = 100)
     trader_grid = Functions.grid_stock_market(L, fundamentalist_probability)
     # variate sensitivity constant
+    Prices = []
+    Trading = []
     for sensitivity_constant in sensitivity_variations:
         # initialize storage for each set of parameters and simulation results
         price_storage = []
@@ -185,9 +185,25 @@ for fundamentalist_probability in variations_fundamentalists:
             price_storage.append(np.mean(simulation_results[1]))
             trading_activity_storage.append(np.mean(simulation_results[3]))
         # append all results and parameters
-        Fundamentalists.append(fundamentalist_probability)
-        Sensitivity.append(sensitivity_constant)
         Prices.append(np.mean(price_storage))
         Trading.append(np.mean(trading_activity_storage))
+    Prices_matrix.append(np.array(Prices))
+    Trading_activity_matrix.append(np.array(Trading))
+
+
+transitions_price = np.array(Prices_matrix)
+transitions_trading_activity = np.array(Trading_activity_matrix)
+
+# DEFINITIELY CROSS CHECK IF WE ARE PLOTTING THE RIGHT AXES !!!
+plt.imshow(transitions_trading_activity, extent=[min(sensitivity_variations), max(sensitivity_variations), min(variations_fundamentalists), max(variations_fundamentalists)], origin='lower', cmap='plasma_r')
+plt.colorbar(label='Phase Transition')
+# Add labels and title
+plt.xlabel('Sensitivity Constant')
+plt.ylabel('Fraction of Fundamentalists')
+plt.title('Phase Transition Map')
+# Show the plot
+plt.show()
+
+
 
 
