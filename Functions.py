@@ -1,4 +1,5 @@
 import numpy as np
+import random
 
 # Generate grid of traders
 def grid_stock_market(L, fundamentalist_probability):
@@ -150,6 +151,26 @@ def next_state_Level_3(trader_grid, cur_state, price_list, fundamental_value, ne
     
     return transaction_quantity
 
+
+def next_state_random_neighbourhood(trader_grid, cur_state, price_list, fundamental_value, news_relevance, L, trades):
+    
+    transaction_quantity = np.zeros(np.shape(cur_state))
+    assert (L, L) == np.shape(cur_state)
+    
+    news_both = news_influence(news_relevance)
+    for row_index in range(L):
+        for column_index in range(L):
+            trader_type = trader_grid[row_index, column_index]
+            
+            if trader_type == 0:
+                price = price_list[-1]
+                news = news_both[0]
+                transaction_quantity[row_index,column_index] = (fundamental_value*news - price) * trades
+            else:
+                news = news_both[1]
+                transaction_quantity[row_index,column_index] = trades*news*transition_table([cur_state[random.randint(0,L-1), random.randint(0,L-1)], cur_state[random.randint(0,L-1), random.randint(0,L-1)], cur_state[random.randint(0,L-1), random.randint(0,L-1)], cur_state[random.randint(0,L-1),random.randint(0,L-1)], cur_state[random.randint(0,L-1), random.randint(0,L-1)], cur_state[random.randint(0,L-1), random.randint(0,L-1)], cur_state[random.randint(0,L-1), random.randint(0,L-1)],cur_state[random.randint(0,L-1), random.randint(0,L-1)]])
+    
+    return transaction_quantity
 
 
 
