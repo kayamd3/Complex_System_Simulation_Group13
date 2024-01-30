@@ -58,52 +58,52 @@ plt.suptitle('Trading activity')
 plt.show()
 plt.close()
     
-fig = make_subplots(rows=2, cols=1,shared_xaxes=True) # ,vertical_spacing  = 0.25
+#fig = make_subplots(rows=2, cols=1,shared_xaxes=True) # ,vertical_spacing  = 0.25
 # Add traces, one for each slider step
-for sensitivity in sensitivity_variations:
-    results = random_neighbourhood_simulation(trader_grid, initial_price, fundamental_value, time, L, sensitivity, trading_constant, news_relevance, stock, period)
-    fig.add_trace(
-        go.Scatter(
-            visible=False,
-            line=dict(color="purple", width=2),
-            name="Sensitivity" + str(sensitivity),
-            x = np.arange(0, len(results[1])+1, 1.0),
-            y = results[1]
-            ),row=1, col=1)
-    fig.add_trace(
-        go.Scatter(
-            visible=False,
-            line=dict(color="red", width=2),
-            name="Sensitivity " + str(sensitivity),
-            x = np.arange(0, len(results[1])+1, 1.0),
-            y = results[3]
-            ),row=2, col=1)
+#for sensitivity in sensitivity_variations:
+    #results = random_neighbourhood_simulation(trader_grid, initial_price, fundamental_value, time, L, sensitivity, trading_constant, news_relevance, stock, period)
+    #fig.add_trace(
+        #go.Scatter(
+          #  visible=False,
+         #   line=dict(color="purple", width=2),
+        #    name="Sensitivity" + str(sensitivity),
+       #     x = np.arange(0, len(results[1])+1, 1.0),
+      #      y = results[1]
+     #       ),row=1, col=1)
+    #fig.add_trace(
+       # go.Scatter(
+      #      visible=False,
+     #       line=dict(color="red", width=2),
+    #        name="Sensitivity " + str(sensitivity),
+   #         x = np.arange(0, len(results[1])+1, 1.0),
+  #          y = results[3]
+ #           ),row=2, col=1)
     
 
 # Create and add slider
-steps = []
+#steps = []
 
-for i in range(0, len(fig.data), 2):
-    step = dict(
-        method="restyle",
-        args=["visible", [False] * len(fig.data)],
-    )
-    step["args"][1][i:i+2] = [True, True]
-    steps.append(step)
+#for i in range(0, len(fig.data), 2):
+   # step = dict(
+     #   method="restyle",
+    #    args=["visible", [False] * len(fig.data)],
+   # )
+  #  step["args"][1][i:i+2] = [True, True]
+ #   steps.append(step)
 
-sliders = [dict(
-    active=0,
-    currentvalue={"prefix": "Time:  "},
-    pad={"t": 50},
-    steps=steps
-)]
+#sliders = [dict(
+    #active=0,
+   # currentvalue={"prefix": "Time:  "},
+  #  pad={"t": 50},
+ #   steps=steps
+#)]
 
-fig.update_yaxes(title_text="Price", row=1, col=1)
-fig.update_yaxes(title_text="Trading Activity", row=2, col=1)
-fig.update_layout(sliders=sliders, title="Prices & Trading Activity for varying sensitivity constant", template ="plotly_white")
+#fig.update_yaxes(title_text="Price", row=1, col=1)
+#fig.update_yaxes(title_text="Trading Activity", row=2, col=1)
+#fig.update_layout(sliders=sliders, title="Prices & Trading Activity for varying sensitivity constant", template ="plotly_white")
 
-plotly.offline.plot(fig, filename='Phases_SensitivityConstant.html')
-fig.show() 
+#plotly.offline.plot(fig, filename='Phases_SensitivityConstant.html')
+#fig.show() 
 
 average_price = []
 price_variance = []
@@ -127,7 +127,6 @@ ci_price = 1.96 * np.array(price_variance)/5
 ci_trading_activity = 1.96 * np.array(trading_activity_variance)/5
 
 plt.figure(dpi = 300, figsize = (4, 8))
-
 plt.subplot(211)
 plt.plot(sensitivity_variations, average_price, color = 'purple')
 plt.fill_between(sensitivity_variations, (np.array(average_price)-ci_price), (np.array(average_price)+ci_price), color='purple', alpha=.25)

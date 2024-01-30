@@ -149,7 +149,7 @@ def next_state_Level_3(trader_grid, cur_state, price_list, fundamental_value, ne
                 news = news_both[1]
                 transaction_quantity[row_index,column_index] = trades*news*transition_table([cur_state[(row_index-1)%L, column_index%L], cur_state[(row_index+1)%L, column_index%L], cur_state[(row_index)%L, (column_index-1)%L], cur_state[(row_index)%L, (column_index+1)%L], cur_state[(row_index-1)%L, (column_index-1)%L], cur_state[(row_index-1)%L, (column_index+1)%L], cur_state[(row_index+1)%L, (column_index-1)%L],cur_state[(row_index+1)%L, (column_index+1)%L]])
     
-    return transaction_quantity
+    return transaction_quantity, news_both
 
 
 def next_state_random_neighbourhood(trader_grid, cur_state, price_list, fundamental_value, news_relevance, L, trades):
@@ -168,7 +168,7 @@ def next_state_random_neighbourhood(trader_grid, cur_state, price_list, fundamen
                 transaction_quantity[row_index,column_index] = (fundamental_value*news - price) * trades
             else:
                 news = news_both[1]
-                transaction_quantity[row_index,column_index] = trades*news*transition_table([cur_state[random.randint(0,L-1), random.randint(0,L-1)], cur_state[random.randint(0,L-1), random.randint(0,L-1)], cur_state[random.randint(0,L-1), random.randint(0,L-1)], cur_state[random.randint(0,L-1),random.randint(0,L-1)], cur_state[random.randint(0,L-1), random.randint(0,L-1)], cur_state[random.randint(0,L-1), random.randint(0,L-1)], cur_state[random.randint(0,L-1), random.randint(0,L-1)],cur_state[random.randint(0,L-1), random.randint(0,L-1)]])
+                transaction_quantity[row_index,column_index] = trades*news*transition_table([cur_state[random.randint(0,L-1), random.randint(0,L-1)]])# , cur_state[random.randint(0,L-1), random.randint(0,L-1)], cur_state[random.randint(0,L-1), random.randint(0,L-1)], cur_state[random.randint(0,L-1),random.randint(0,L-1)], cur_state[random.randint(0,L-1), random.randint(0,L-1)], cur_state[random.randint(0,L-1), random.randint(0,L-1)], cur_state[random.randint(0,L-1), random.randint(0,L-1)],cur_state[random.randint(0,L-1), random.randint(0,L-1)]])
     
     return transaction_quantity
 

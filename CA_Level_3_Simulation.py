@@ -16,22 +16,25 @@ def Level_3_simulation(trader_grid, initial_price, fundamental_value, time, L, s
     
     # initialize transaction quantities. Note that this implies at t=0 we initialize with imitators not trading and fundamentalists changing to the updated price values
     transaction_quantities = Functions.next_state_Level_3(trader_grid, np.zeros((L,L)), price_list, fundamental_value, news_relevance, L, trades)
-    transactions = [transaction_quantities]
+    transactions = [transaction_quantities[0]]
+    News = [transaction_quantities[1]]
     for t in range(time):
         price_fluctuation = Functions.price_fluctuations(period_length, price_list)
         price_fluctuation_list.append(price_fluctuation)
         trades = Functions.trading_activity_function(constant_trading, price_fluctuation, stock_favorability)
         trades_list.append(trades)
         
-        transactions.append(Functions.next_state_Level_3(trader_grid, transactions[-1], price_list, fundamental_value, news_relevance, L, trades))
+        next_result = Functions.next_state_Level_3(trader_grid, transactions[-1], price_list, fundamental_value, news_relevance, L, trades)
+        transactions.append(next_result[0])
+        News.append(next_result[1])
         trans_quantity = Functions.calculation_transaction_quantity(transactions[-1], L)
         price_list.append(Functions.price_function(price_list[-1],sensitivity_contant,L, trans_quantity))
-    return np.array(transactions), np.array(price_list), np.array(price_fluctuation_list), np.array(trades_list)
+    return np.array(transactions), np.array(price_list), np.array(price_fluctuation_list), np.array(trades_list), np.array(News)
 
-L = 100
+L = 10
 fundamental_value = 100
 initial_price = 100
-time = 500
+time = 100
 sensitivity_constant = 0.7
 trader_grid = Functions.grid_stock_market(L, 0.3)
 trading_constant = 20
@@ -194,6 +197,8 @@ for fundamentalist_probability in variations_fundamentalists:
 transitions_price = np.array(Prices_matrix)
 transitions_trading_activity = np.array(Trading_activity_matrix)
 
+
+# Generate phase transition map depending on sensitivity constant and fraction of fundamentalists
 # DEFINITIELY CROSS CHECK IF WE ARE PLOTTING THE RIGHT AXES !!!
 plt.imshow(transitions_trading_activity, extent=[min(sensitivity_variations), max(sensitivity_variations), min(variations_fundamentalists), max(variations_fundamentalists)], origin='lower', cmap='plasma_r')
 plt.colorbar(label='Phase Transition')
