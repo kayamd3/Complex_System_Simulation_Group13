@@ -68,18 +68,19 @@ plt.close()
     # Coul you make a bifurcation diagram for this transition?
     # Control parameter vs order parameter plot ?
     # Potential expansion of model could be to implement the spread of rumors in the model --> how does this affect simulation
-sensitivity_variations = np.arange(0,1.4, 0.2)
-    
-fig = make_subplots(rows=2, cols=1,shared_xaxes=True) # ,vertical_spacing  = 0.25
 
+Fundamentalist_news = np.arange(0,1.3, 0.1)    
+
+fig = make_subplots(rows=2, cols=1,shared_xaxes=True)
 # Add traces, one for each slider step
-for sensitivity in sensitivity_variations:
-    results = Level_3_simulation(trader_grid, initial_price, fundamental_value, time, L, sensitivity, trading_constant, news_relevance, stock, period)
+for news_fundamentalists in Fundamentalist_news:
+    news_relevance = [news_fundamentalists, 0.5]
+    results = Level_3_simulation(trader_grid, initial_price, fundamental_value, time, L, sensitivity_constant, trading_constant, news_relevance, stock, period)
     fig.add_trace(
         go.Scatter(
             visible=False,
             line=dict(color="purple", width=2),
-            name="Sensitivity" + str(sensitivity),
+            name="News" + str(news_fundamentalists),
             x = np.arange(0, len(results[1])+1, 1.0),
             y = results[1]
             ),row=1, col=1)
@@ -87,7 +88,7 @@ for sensitivity in sensitivity_variations:
         go.Scatter(
             visible=False,
             line=dict(color="red", width=2),
-            name="Sensitivity " + str(sensitivity),
+            name="News " + str(news_fundamentalists),
             x = np.arange(0, len(results[1])+1, 1.0),
             y = results[3]
             ),row=2, col=1)
@@ -113,9 +114,9 @@ sliders = [dict(
 
 fig.update_yaxes(title_text="Price", row=1, col=1)
 fig.update_yaxes(title_text="Trading Activity", row=2, col=1)
-fig.update_layout(sliders=sliders, title="Prices & Trading Activity for varying sensitivity constant", template ="plotly_white")
+fig.update_layout(sliders=sliders, title="Prices & Trading Activity for varying News relevance", template ="plotly_white")
 
-plotly.offline.plot(fig, filename='Phases_SensitivityConstant.html')
+plotly.offline.plot(fig, filename='Phases_NewsRelevance.html')
 fig.show() 
     
 ## PHASE TRANSITIONS
@@ -126,6 +127,8 @@ price_variance = []
 average_trading_activity = []
 trading_activity_variance = []
 
+
+sensitivity_variations = np.arange(0.2, 1.4, 0.2)
 # Generate order parameters for varying control parameter
 for sensitivity in sensitivity_variations:
     price_storage = []
@@ -143,7 +146,6 @@ ci_price = 1.96 * np.array(price_variance)/30
 ci_trading_activity = 1.96 * np.array(trading_activity_variance)/30
 
 plt.figure(dpi = 300, figsize = (4, 8))
-
 plt.subplot(211)
 plt.plot(sensitivity_variations, average_price, color = 'purple')
 plt.fill_between(sensitivity_variations, (np.array(average_price)-ci_price), (np.array(average_price)+ci_price), color='purple', alpha=.25)
@@ -153,6 +155,45 @@ plt.plot(sensitivity_variations, average_trading_activity, color = 'red')
 plt.fill_between(sensitivity_variations, (np.array(average_trading_activity)-ci_trading_activity), (np.array(average_trading_activity)+ci_trading_activity), color='red', alpha=.25)
 plt.ylabel('Mean trading activity')
 plt.xlabel('Sensitivity constant')
+plt.suptitle('Emergence of Price fluctuations and Trading activity')
+plt.show()
+plt.close()
+
+
+average_price = []
+price_variance = []
+average_trading_activity = []
+trading_activity_variance = []
+
+# Generate order parameters for varying control parameter
+for fundamentalist_news in Fundamentalist_news:
+    news_relevance = [fundamentalist_news, 0.5]
+    price_storage = []
+    trading_activity_storage = []
+    for statistical_significance in range(30):
+        simulation_result = Level_3_simulation(trader_grid, initial_price, fundamental_value, time, L, sensitivity, trading_constant, news_relevance, stock, period)
+        price_storage.append(np.mean(simulation_result[1]))
+        trading_activity_storage.append(np.mean(simulation_result[3]))
+    average_price.append(np.mean(price_storage))
+    price_variance.append(np.std(price_storage))
+    average_trading_activity.append(np.mean(trading_activity_storage))
+    trading_activity_variance.append(np.std(trading_activity_storage))
+
+ci_price = 1.96 * np.array(price_variance)/30
+ci_trading_activity = 1.96 * np.array(trading_activity_variance)/30
+
+plt.figure(dpi = 300, figsize = (4, 8))
+
+plt.subplot(211)
+plt.plot(Fundamentalist_news, average_price, color = 'purple')
+plt.fill_between(Fundamentalist_news, (np.array(average_price)-ci_price), (np.array(average_price)+ci_price), color='purple', alpha=.25)
+plt.ylabel('Mean price')
+plt.subplot(212)
+plt.plot(Fundamentalist_news, average_trading_activity, color = 'red')
+plt.fill_between(Fundamentalist_news, (np.array(average_trading_activity)-ci_trading_activity), (np.array(average_trading_activity)+ci_trading_activity), color='red', alpha=.25)
+plt.ylabel('Mean trading activity')
+plt.xlabel('Factor of News relevance for Fundamentalists')
+plt.suptitle('Emergence of Price fluctuation and Trading activity')
 plt.show()
 plt.close()
 
@@ -171,10 +212,8 @@ Prices_matrix = []
 Trading_activity_matrix = []
 
 # initialize fundamentalist probability variations & iterate through different probabilities
-variations_fundamentalists = np.arange(0.1, 1.1, 0.1)
-for fundamentalist_probability in variations_fundamentalists:
-    # initialize trader grid (note: L = 100)
-    trader_grid = Functions.grid_stock_market(L, fundamentalist_probability)
+for fundamentalist_probability in Fundamentalist_news:
+    news_relevance = [fundamentalist_probability, 0.5]
     # variate sensitivity constant
     Prices = []
     Trading = []
@@ -183,7 +222,51 @@ for fundamentalist_probability in variations_fundamentalists:
         price_storage = []
         trading_activity_storage = []
         # simulate 30 times per parameter set for statistical significance
-        for statistical_significance in range(30):
+        for statistical_significance in range(3):
+            simulation_results = Level_3_simulation(trader_grid, initial_price, fundamental_value, time, L, sensitivity_constant, trading_constant, news_relevance, stock, period)
+            price_storage.append(np.mean(simulation_results[1]))
+            trading_activity_storage.append(np.mean(simulation_results[3]))
+        # append all results and parameters
+        Prices.append(np.mean(price_storage))
+        Trading.append(np.mean(trading_activity_storage))
+    Prices_matrix.append(np.array(Prices))
+    Trading_activity_matrix.append(np.array(Trading))
+
+
+transitions_price = np.array(Prices_matrix)
+transitions_trading_activity = np.array(Trading_activity_matrix)
+
+
+# Generate phase transition map depending on sensitivity constant and fraction of fundamentalists
+plt.imshow(transitions_trading_activity, extent=[min(sensitivity_variations), max(sensitivity_variations), min(Fundamentalist_news), max(Fundamentalist_news)], origin='lower', cmap='plasma_r')
+plt.colorbar(label='Mean Trading Activity')
+# Add labels and title
+plt.xlabel('Sensitivity Constant')
+plt.ylabel('News relevance for Fundamentalists')
+plt.title('Phase Transition Map')
+# Show the plot
+plt.show()
+
+
+## MAP OF DIFFERENT REGIMES FOR NEWS RELEVANCE
+# Regimes are minimal trading activity and increased trading activity
+# initialize storage for parameters, mean prices, and trading activity
+Prices_matrix = []
+Trading_activity_matrix = []
+
+# initialize fundamentalist probability variations & iterate through different probabilities
+Imitator_news = np.arange(0,1.3, 0.1)
+for fundamentalist_probability in Fundamentalist_news:
+    # variate sensitivity constant
+    Prices = []
+    Trading = []
+    for imitators_probability in Imitator_news:
+        news_relevance = [fundamentalist_probability, imitators_probability]
+        # initialize storage for each set of parameters and simulation results
+        price_storage = []
+        trading_activity_storage = []
+        # simulate 30 times per parameter set for statistical significance
+        for statistical_significance in range(3):
             simulation_results = Level_3_simulation(trader_grid, initial_price, fundamental_value, time, L, sensitivity_constant, trading_constant, news_relevance, stock, period)
             price_storage.append(np.mean(simulation_results[1]))
             trading_activity_storage.append(np.mean(simulation_results[3]))
@@ -200,15 +283,14 @@ transitions_trading_activity = np.array(Trading_activity_matrix)
 
 # Generate phase transition map depending on sensitivity constant and fraction of fundamentalists
 # DEFINITIELY CROSS CHECK IF WE ARE PLOTTING THE RIGHT AXES !!!
-plt.imshow(transitions_trading_activity, extent=[min(sensitivity_variations), max(sensitivity_variations), min(variations_fundamentalists), max(variations_fundamentalists)], origin='lower', cmap='plasma_r')
-plt.colorbar(label='Phase Transition')
+plt.imshow(transitions_trading_activity, extent=[min(Imitator_news), max(Imitator_news), min(Fundamentalist_news), max(Fundamentalist_news)], origin='lower', cmap='plasma_r')
+plt.colorbar(label='Mean Trading Activity')
 # Add labels and title
-plt.xlabel('Sensitivity Constant')
-plt.ylabel('Fraction of Fundamentalists')
+plt.xlabel('News relevance for Imitators')
+plt.ylabel('News relevance for Fundamentalists')
 plt.title('Phase Transition Map')
 # Show the plot
 plt.show()
-
 
 
 
