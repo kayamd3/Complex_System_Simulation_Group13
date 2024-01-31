@@ -152,7 +152,7 @@ def next_state_Level_3(trader_grid, cur_state, price_list, fundamental_value, ne
     return transaction_quantity, news_both
 
 
-def next_state_random_neighbourhood(trader_grid, cur_state, price_list, fundamental_value, news_relevance, L, trades):
+def next_state_random_neighbourhood(trader_grid, cur_state, price_list, fundamental_value, news_relevance, L, trades, neighbourhood_row, neighbourhood_column):
     
     transaction_quantity = np.zeros(np.shape(cur_state))
     assert (L, L) == np.shape(cur_state)
@@ -168,7 +168,7 @@ def next_state_random_neighbourhood(trader_grid, cur_state, price_list, fundamen
                 transaction_quantity[row_index,column_index] = (fundamental_value*news - price) * trades
             else:
                 news = news_both[1]
-                transaction_quantity[row_index,column_index] = trades*news*transition_table([cur_state[random.randint(0,L-1), random.randint(0,L-1)]])# , cur_state[random.randint(0,L-1), random.randint(0,L-1)], cur_state[random.randint(0,L-1), random.randint(0,L-1)], cur_state[random.randint(0,L-1),random.randint(0,L-1)], cur_state[random.randint(0,L-1), random.randint(0,L-1)], cur_state[random.randint(0,L-1), random.randint(0,L-1)], cur_state[random.randint(0,L-1), random.randint(0,L-1)],cur_state[random.randint(0,L-1), random.randint(0,L-1)]])
+                transaction_quantity[row_index,column_index] = trades*news*transition_table([cur_state[neighbourhood_row[row_index], neighbourhood_column[column_index]]])
     
     return transaction_quantity
 

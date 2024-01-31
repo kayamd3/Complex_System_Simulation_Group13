@@ -31,15 +31,15 @@ def Level_3_simulation(trader_grid, initial_price, fundamental_value, time, L, s
         price_list.append(Functions.price_function(price_list[-1],sensitivity_contant,L, trans_quantity))
     return np.array(transactions), np.array(price_list), np.array(price_fluctuation_list), np.array(trades_list), np.array(News)
 
-L = 10
+L = 50
 fundamental_value = 100
 initial_price = 100
-time = 100
+time = 500
 sensitivity_constant = 0.7
-trader_grid = Functions.grid_stock_market(L, 0.3)
+trader_grid = Functions.grid_stock_market(L, 0.5)
 trading_constant = 20
 news_relevance = [0.2, 0.7]
-stock = 0.01
+stock = 0.01 
 period = 10
 
 
@@ -69,7 +69,7 @@ plt.close()
     # Control parameter vs order parameter plot ?
     # Potential expansion of model could be to implement the spread of rumors in the model --> how does this affect simulation
 
-Fundamentalist_news = np.arange(0,1.3, 0.1)    
+Fundamentalist_news = np.arange(0,1.1, 0.1)    
 
 fig = make_subplots(rows=2, cols=1,shared_xaxes=True)
 # Add traces, one for each slider step
@@ -122,6 +122,17 @@ fig.show()
 ## PHASE TRANSITIONS
 # First generate means for different sensitivity constants
 # Initialize storage of order parameters
+L = 10
+fundamental_value = 100
+initial_price = 100
+time = 100
+sensitivity_constant = 0.7
+trader_grid = Functions.grid_stock_market(L, 0.5)
+trading_constant = 20
+news_relevance = [0.2, 0.7]
+stock = 0.01
+period = 10
+
 average_price = []
 price_variance = []
 average_trading_activity = []

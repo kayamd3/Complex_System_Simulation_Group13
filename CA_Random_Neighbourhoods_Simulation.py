@@ -14,25 +14,30 @@ def random_neighbourhood_simulation(trader_grid, initial_price, fundamental_valu
     trades = Functions.trading_activity_function(constant_trading, price_fluctuation, stock_favorability)
     trades_list = [trades]
     
+    # Initialize neighbour they are looking at
+    random_array_row = [np.random.randint(0, L-1) for _ in range(L)]
+    random_array_column = [np.random.randint(0, L-1) for _ in range(L)]
+    
     # initialize transaction quantities. Note that this implies at t=0 we initialize with imitators not trading and fundamentalists changing to the updated price values
-    transaction_quantities = Functions.next_state_random_neighbourhood(trader_grid, np.zeros((L,L)), price_list, fundamental_value, news_relevance, L, trades)
+    transaction_quantities = Functions.next_state_random_neighbourhood(trader_grid, np.zeros((L,L)), price_list, fundamental_value, news_relevance, L, trades, random_array_row, random_array_column)
     transactions = [transaction_quantities]
+    
     for t in range(time):
         price_fluctuation = Functions.price_fluctuations(period_length, price_list)
         price_fluctuation_list.append(price_fluctuation)
         trades = Functions.trading_activity_function(constant_trading, price_fluctuation, stock_favorability)
         trades_list.append(trades)
         
-        transactions.append(Functions.next_state_random_neighbourhood(trader_grid, transactions[-1], price_list, fundamental_value, news_relevance, L, trades))
+        transactions.append(Functions.next_state_random_neighbourhood(trader_grid, transactions[-1], price_list, fundamental_value, news_relevance, L, trades, random_array_row, random_array_column))
         trans_quantity = Functions.calculation_transaction_quantity(transactions[-1], L)
         price_list.append(Functions.price_function(price_list[-1],sensitivity_contant,L, trans_quantity))
     return np.array(transactions), np.array(price_list), np.array(price_fluctuation_list), np.array(trades_list)
 
 
-L = 100
+L = 10
 fundamental_value = 100
 initial_price = 100
-time = 500
+time = 50
 trader_grid = Functions.grid_stock_market(L, 0.3)
 trading_constant = 20
 news_relevance = [0.2, 0.7]
