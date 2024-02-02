@@ -1,6 +1,6 @@
 # Complex System Simulation
 # Group 13
-  K. M. Disselkamp  F. Catania  P. Venkatesh  Y. Lu
+  Group members : K. M. Disselkamp  F. Catania  P. Venkatesh  Y. Lu
 
 ## Project Task Assignments
 
