@@ -6,8 +6,9 @@ import plotly
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
+# Simulate level 3 for t time steps on given grid 
 def Level_3_simulation(trader_grid, initial_price, fundamental_value, time, L, sensitivity_contant, constant_trading, news_relevance, stock_favorability, period_length):
-    # initialize price list for market
+    # initialize price list, price fluctuation storage, and trading activity for market
     price_list = [initial_price]
     price_fluctuation = Functions.price_fluctuations(period_length, price_list)
     price_fluctuation_list = [price_fluctuation]
@@ -18,19 +19,24 @@ def Level_3_simulation(trader_grid, initial_price, fundamental_value, time, L, s
     transaction_quantities = Functions.next_state_Level_3(trader_grid, np.zeros((L,L)), price_list, fundamental_value, news_relevance, L, trades)
     transactions = [transaction_quantities[0]]
     News = [transaction_quantities[1]]
+    # iterate CA model through time using next_state_level_3 function
     for t in range(time):
+        # calulcate price fluctuation and trading activity at this time step
         price_fluctuation = Functions.price_fluctuations(period_length, price_list)
         price_fluctuation_list.append(price_fluctuation)
         trades = Functions.trading_activity_function(constant_trading, price_fluctuation, stock_favorability)
         trades_list.append(trades)
         
+        # continue to next step in cellular automata and append next results
         next_result = Functions.next_state_Level_3(trader_grid, transactions[-1], price_list, fundamental_value, news_relevance, L, trades)
         transactions.append(next_result[0])
         News.append(next_result[1])
         trans_quantity = Functions.calculation_transaction_quantity(transactions[-1], L)
         price_list.append(Functions.price_function(price_list[-1],sensitivity_contant,L, trans_quantity))
+    # return results as arrays: transaction matrix, prices, fluctuations in price, trading activity, and news relevance for fundamentalists and imitators
     return np.array(transactions), np.array(price_list), np.array(price_fluctuation_list), np.array(trades_list), np.array(News)
-
+"""
+# Set initial conditions
 L = 50
 fundamental_value = 100
 initial_price = 100
@@ -42,7 +48,7 @@ news_relevance = [0.2, 0.7]
 stock = 0.01 
 period = 10
 
-
+# Plot prices and trading activity for one result 
 resultS = Level_3_simulation(trader_grid, initial_price, fundamental_value, time, L, sensitivity_constant, trading_constant, news_relevance, stock, period)
 plt.figure(dpi = 300)
 plt.plot(np.arange(time+1), resultS[1], color = 'purple')
@@ -69,8 +75,20 @@ plt.close()
     # Control parameter vs order parameter plot ?
     # Potential expansion of model could be to implement the spread of rumors in the model --> how does this affect simulation
 
-Fundamentalist_news = np.arange(0,1.1, 0.1)    
 
+L = 50
+fundamental_value = 100
+initial_price = 100
+time = 500
+sensitivity_constant = 0.7
+trader_grid = Functions.grid_stock_market(L, 0.5)
+trading_constant = 20
+# news_relevance = [0.2, 0.7]
+stock = 0.01 
+period = 10
+Fundamentalist_news = np.arange(0,1.1, 0.1)  
+
+# Generate slider plot for various news relevances  
 fig = make_subplots(rows=2, cols=1,shared_xaxes=True)
 # Add traces, one for each slider step
 for news_fundamentalists in Fundamentalist_news:
@@ -118,27 +136,28 @@ fig.update_layout(sliders=sliders, title="Prices & Trading Activity for varying 
 
 plotly.offline.plot(fig, filename='Phases_NewsRelevance.html')
 fig.show() 
-    
+   
+
 ## PHASE TRANSITIONS
 # First generate means for different sensitivity constants
-# Initialize storage of order parameters
-L = 10
+# Set initial conditions
+L = 50
 fundamental_value = 100
 initial_price = 100
-time = 100
-sensitivity_constant = 0.7
+time = 500
+# sensitivity_constant = 0.7
 trader_grid = Functions.grid_stock_market(L, 0.5)
 trading_constant = 20
 news_relevance = [0.2, 0.7]
-stock = 0.01
+stock = 0.01 
 period = 10
-
+# Initialize storage of order parameters
 average_price = []
 price_variance = []
 average_trading_activity = []
 trading_activity_variance = []
 
-
+# Iterate through different sensitivity constants
 sensitivity_variations = np.arange(0.2, 1.4, 0.2)
 # Generate order parameters for varying control parameter
 for sensitivity in sensitivity_variations:
@@ -153,9 +172,11 @@ for sensitivity in sensitivity_variations:
     average_trading_activity.append(np.mean(trading_activity_storage))
     trading_activity_variance.append(np.std(trading_activity_storage))
 
+# calculate confidence intervals 
 ci_price = 1.96 * np.array(price_variance)/30
 ci_trading_activity = 1.96 * np.array(trading_activity_variance)/30
 
+# plot results 
 plt.figure(dpi = 300, figsize = (4, 8))
 plt.subplot(211)
 plt.plot(sensitivity_variations, average_price, color = 'purple')
@@ -171,12 +192,26 @@ plt.show()
 plt.close()
 
 
+# re-initialize parameters for safety
+L = 50
+fundamental_value = 100
+initial_price = 100
+time = 500
+sensitivity_constant = 0.7
+trader_grid = Functions.grid_stock_market(L, 0.5)
+trading_constant = 20
+# news_relevance = [0.2, 0.7]
+stock = 0.01 
+period = 10
+
+# re-initialize storage
 average_price = []
 price_variance = []
 average_trading_activity = []
 trading_activity_variance = []
 
 # Generate order parameters for varying control parameter
+Fundamentalist_news = np.arange(0,1.1, 0.1) 
 for fundamentalist_news in Fundamentalist_news:
     news_relevance = [fundamentalist_news, 0.5]
     price_storage = []
@@ -190,11 +225,11 @@ for fundamentalist_news in Fundamentalist_news:
     average_trading_activity.append(np.mean(trading_activity_storage))
     trading_activity_variance.append(np.std(trading_activity_storage))
 
+# calculate confidence intervals 
 ci_price = 1.96 * np.array(price_variance)/30
 ci_trading_activity = 1.96 * np.array(trading_activity_variance)/30
-
+# generate plots 
 plt.figure(dpi = 300, figsize = (4, 8))
-
 plt.subplot(211)
 plt.plot(Fundamentalist_news, average_price, color = 'purple')
 plt.fill_between(Fundamentalist_news, (np.array(average_price)-ci_price), (np.array(average_price)+ci_price), color='purple', alpha=.25)
@@ -218,11 +253,23 @@ plt.close()
 
 ## MAP OF DIFFERENT REGIMES
 # Regimes are minimal trading activity and increased trading activity
+# re-initialize parameters for safety
+L = 50
+fundamental_value = 100
+initial_price = 100
+time = 500
+sensitivity_constant = 0.7
+trader_grid = Functions.grid_stock_market(L, 0.5)
+trading_constant = 20
+# news_relevance = [0.2, 0.7]
+stock = 0.01 
+period = 10
 # initialize storage for parameters, mean prices, and trading activity
 Prices_matrix = []
 Trading_activity_matrix = []
 
 # initialize fundamentalist probability variations & iterate through different probabilities
+Fundamentalist_news = np.arange(0,1.1, 0.1)
 for fundamentalist_probability in Fundamentalist_news:
     news_relevance = [fundamentalist_probability, 0.5]
     # variate sensitivity constant
@@ -261,6 +308,17 @@ plt.show()
 
 ## MAP OF DIFFERENT REGIMES FOR NEWS RELEVANCE
 # Regimes are minimal trading activity and increased trading activity
+L = 50
+fundamental_value = 100
+initial_price = 100
+time = 500
+sensitivity_constant = 0.7
+trader_grid = Functions.grid_stock_market(L, 0.5)
+trading_constant = 20
+# news_relevance = [0.2, 0.7]
+stock = 0.01 
+period = 10
+
 # initialize storage for parameters, mean prices, and trading activity
 Prices_matrix = []
 Trading_activity_matrix = []
@@ -293,7 +351,6 @@ transitions_trading_activity = np.array(Trading_activity_matrix)
 
 
 # Generate phase transition map depending on sensitivity constant and fraction of fundamentalists
-# DEFINITIELY CROSS CHECK IF WE ARE PLOTTING THE RIGHT AXES !!!
 plt.imshow(transitions_trading_activity, extent=[min(Imitator_news), max(Imitator_news), min(Fundamentalist_news), max(Fundamentalist_news)], origin='lower', cmap='plasma_r')
 plt.colorbar(label='Mean Trading Activity')
 # Add labels and title
@@ -301,7 +358,7 @@ plt.xlabel('News relevance for Imitators')
 plt.ylabel('News relevance for Fundamentalists')
 plt.title('Phase Transition Map')
 # Show the plot
-plt.show()
+plt.show()"""
 
 
 
