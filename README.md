@@ -16,8 +16,6 @@ Our aim for this project was to examine emergence properties in a stock market. 
 We first created a Baseline model and found no emergence properties as it came to an equilibrium point. To expand the model, we incorporated stochasticity in the form of news.
 This was the basis for our Expanded model. Both of which are found in the notebook: CA and the stock market - results.
 
-If you'd like to have a play around with the parameters on the Expanded model please run the stream_v2.py file.
-
 ## Table of Contents
 
 - [Installation](#installation)
@@ -39,3 +37,10 @@ pip install -r requirements.txt
 
 Please keep in mind it will take quite some time for it to run entirely. To speed up the process, you may need to reduce the grid size (L) and timesteps (from 500 to 100). 
 You may also need to reduce the number of simulations it does from 30 to, say, 5.
+
+If you'd like to have a play around with the parameters on the Expanded model please run the stream_v2.py file.
+
+```bash
+cd Complex_System_Simulation_Group13
+streamlit run stream_v2.py 
+```
