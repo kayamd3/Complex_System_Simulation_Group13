@@ -151,7 +151,22 @@ def next_state_random_neighbourhood(trader_grid, cur_state, price_list, fundamen
     # return matrix of new transaction quantities
     return transaction_quantity
 
+# Calculate the returns for the prices
+def calculate_returns(prices):
+    returns = []
+    for i in range(1, len(prices)):
+        returns.append((prices[i] - prices[i - 1]) / prices[i - 1])
+    return returns
 
+# Divides the returns in different bins and calculates the variance for each bin
+def variance_of_bins(returns, num_bins):
+    smaller_lists = []
+    bins_variances = []
+    bin_size = int(len(returns) / num_bins)
+    for i in range(0, len(returns), bin_size):
+        smaller_lists.append(returns[i:i + bin_size])
+        bins_variances.append(np.var(returns[i:i + bin_size]))
+    return bins_variances
 
 
 
