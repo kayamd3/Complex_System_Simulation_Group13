@@ -26,7 +26,7 @@ If you'd like to have a play around with the parameters on the Expanded model pl
 ## Installation
 
 ```bash
-git clone https://github.com/koenweverink/stochastic_simulation_assignment_2.git
+git clone https://github.com/kayamd3/Complex_System_Simulation_Group13 
 cd Complex_System_Simulation_Group13
 pip install -r requirements.txt
 ```
