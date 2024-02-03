@@ -17,7 +17,7 @@ if 'timestep' not in st.session_state:
 
 # Sidebar for parameters
 st.sidebar.title("Simulation Parameters")
-fundamentalist_ratio = st.sidebar.slider("Fundamentalist Ratio", 0.0, 1.0, 0.3, 0.01)
+fundamentalist_ratio = st.sidebar.slider("Imitator Ratio", 0.0, 1.0, 0.3, 0.01)
 sensitivity_constant = st.sidebar.slider("Sensitivity Constant", 0.0, 1.0, 0.8, 0.01)
 time_steps = st.sidebar.slider('Time Steps', min_value=10, max_value=500, value=100)
 fundamental_value = st.sidebar.number_input('Fundamental Value', min_value=1, value=100)
