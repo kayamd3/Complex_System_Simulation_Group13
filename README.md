@@ -46,7 +46,7 @@ streamlit run stream_v2.py
 ```
 Use the sidebar to adjust simulation parameters:
 
-- Fundamentalist Ratio: Set the ratio of fundamentalist traders.
+- Imitator Ratio: Set the ratio of Imitator traders.
 - Sensitivity Constant: Adjust the sensitivity of traders to market changes.
 - Time Steps: Define the number of simulation time steps.
 - Fundamental Value: Set the fundamental value of the stock.
